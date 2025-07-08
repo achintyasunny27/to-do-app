@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<style>
+  body {
+    background: #fff !important;
+  }
+</style>
+<html lang="en">
+<style>
+  body {
+    background: #000 !important;
+    position: relative;
+    overflow: hidden;
+  }
+  .star-dot {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 0;
+  }
+  h1 {
+    color: #0d0d10 !important; /* dark, not black */
+  }
+</style>
+<script>
+  // Add white dots (stars) to the background
+  document.addEventListener('DOMContentLoaded', function() {
+    const numStars = 80;
+    for (let i = 0; i < numStars; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'star-dot';
+      const size = Math.random() * 2 + 1;
+      dot.style.width = dot.style.height = size + 'px';
+      dot.style.top = (Math.random() * 100) + 'vh';
+      dot.style.left = (Math.random() * 100) + 'vw';
+      dot.style.opacity = Math.random() * 0.7 + 0.3;
+      document.body.appendChild(dot);
+    }
+  });
+</script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Do App</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #23243a 0%, #2d2d4d 50%, #3a2d4d 100%);
+      --container-bg: #33344d;
+      --footer-bg: #2d2d4d;
+      --footer-color: #b3b3ff;
+      --text-color: #fff;
+      --input-bg: #23243a;
+      --checkbox-bg: #23243a;
+      --checkbox-border: #4caf50;
+      --checkbox-checked-bg: #4caf50;
+      --checkbox-checked-dot: #fff;
+      --remove-btn-bg: #b22222;
+      --remove-btn-color: #fff;
+      --heading-color: #4caf50;
+      --completed-color: #888;
+    }
+    body.light-mode {
+      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --container-bg: #fff;
+      --footer-bg: #e0e7ff;
+      --footer-color: #333;
+      --text-color: #222;
+      --input-bg: #f0f0f0;
+      --checkbox-bg: #fff;
+      --checkbox-border: #4caf50;
+      --checkbox-checked-bg: #4caf50;
+      --checkbox-checked-dot: #fff;
+      --remove-btn-bg: #e57373;
+      --remove-btn-color: #fff;
+      --heading-color: #388e3c;
+      --completed-color: #bbb;
+    }
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-color);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s, color 0.4s;
+    }
+    .mode-toggle-container {
+      position: absolute;
+      top: 18px;
+      right: 24px;
+      z-index: 10;
+    }
+    .mode-toggle-switch {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .mode-toggle-label {
+      margin-left: 10px;
+      font-size: 1rem;
+      color: var(--text-color);
+      transition: color 0.3s;
+      min-width: 80px;
+      text-align: left;
+        }
+        .mode-toggle-container {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      z-index: 10;
+      background: rgba(44, 62, 80, 0.85);
+      border-radius: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      padding: 6px 18px 6px 10px;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+        }
+        body.light-mode .mode-toggle-container {
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 2px 12px rgba(44,62,80,0.08);
+        }
+        .mode-toggle-switch {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      gap: 10px;
+        }
+        .mode-toggle-label {
+      margin-left: 12px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--text-color);
+      transition: color 0.3s;
+      opacity: 0.85;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+        .mode-toggle-slider {
+      position: relative;
+      width: 54px;
+      height: 28px;
+      background: var(--container-bg);
+      border: 2px solid #4caf50;
+      border-radius: 28px;
+      transition: background 0.3s, border 0.3s;
+      box-sizing: border-box;
+      margin-left: 8px;
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.10);
+        }
+        .mode-toggle-slider::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      background: #4caf50;
+      border-radius: 50%;
+      transition: transform 0.35s cubic-bezier(.68,-0.55,.27,1.55), background 0.3s;
+      box-shadow: 0 2px 8px rgba(76,175,80,0.18);
+      z-index: 2;
+        }
+        .mode-toggle-checkbox:checked + .mode-toggle-slider::before {
+      transform: translateX(24px) scale(1.08);
+      background: #ffd600;
+      box-shadow: 0 2px 8px rgba(255,214,0,0.18);
+        }
+        /* Sun and Moon icons inside the slider */
+        .mode-toggle-slider .sun,
+        .mode-toggle-slider .moon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      z-index: 1;
+      pointer-events: none;
+      transition: opacity 0.3s, filter 0.3s;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.10));
+        }
+        .mode-toggle-slider .sun {
+      left: 6px;
+      opacity: 1;
+        }
+        .mode-toggle-slider .moon {
+      right: 6px;
+      opacity: 0.6;
+        }
+        .mode-toggle-checkbox:checked + .mode-toggle-slider .sun {
+      opacity: 0.25;
+      filter: grayscale(0.7);
+        }
+        .mode-toggle-checkbox:checked + .mode-toggle-slider .moon {
+      opacity: 1;
+      filter: none;
+        }
+        .mode-toggle-checkbox {
+      display: none;
+        }
+        .container {
+      background: var(--container-bg);
+      border-radius: 18px;
+      padding: 32px 22px 22px 22px;
+      margin-top: 0;
+      width: 100%;
+      max-width: 410px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 32px rgba(44,62,80,0.14);
+      transition: background 0.4s, box-shadow 0.4s;
+        }
+        h1 {
+      text-align: center;
+      margin-bottom: 28px;
+      font-size: 2.2rem;
+      color: var(--heading-color);
+      letter-spacing: 0.04em;
+      font-weight: 800;
+      text-shadow: 0 2px 8px rgba(76,175,80,0.10);
+      transition: color 0.4s;
+        }
+        #todo-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 22px;
+        }
+        #todo-form input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1.5px solid #4caf50;
+      background: var(--input-bg);
+      color: var(--text-color);
+      font-size: 1.05rem;
+      font-weight: 500;
+      transition: background 0.4s, color 0.4s, border 0.3s;
+      outline: none;
+        }
+        #todo-form input[type="text"]:focus {
+      border-color: #ffd600;
+      background: #23243a22;
+        }
+        #todo-form button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      background: linear-gradient(90deg, #4caf50 60%, #ffd600 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(76,175,80,0.10);
+      transition: background 0.3s, box-shadow 0.3s;
+        }
+        #todo-form button:hover {
+      background: linear-gradient(90deg, #388e3c 60%, #ffd600 100%);
+      box-shadow: 0 4px 16px rgba(76,175,80,0.18);
+        }
+        #todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+        }
+        #todo-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #4caf5022;
+      transition: background 0.2s;
+      border-radius: 6px;
+      position: relative;
+        }
+        #todo-list li:last-child {
+      border-bottom: none;
+        }
+        /* Circular custom checkbox */
+        .todo-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border: 2.5px solid var(--checkbox-border);
+      border-radius: 50%;
+      background: var(--checkbox-bg);
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      margin-right: 12px;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      vertical-align: middle;
+      display: inline-block;
+      box-shadow: 0 1px 4px rgba(44,62,80,0.10);
+        }
+        .todo-checkbox:checked {
+      background: var(--checkbox-checked-bg);
+      border-color: var(--checkbox-checked-bg);
+      box-shadow: 0 2px 8px rgba(76,175,80,0.18);
+        }
+        .todo-checkbox:checked::after {
+      content: '';
+      display: block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--checkbox-checked-dot);
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      box-shadow: 0 1px 2px rgba(44,62,80,0.10);
+        }
+        .task-desc {
+      flex: 1;
+      margin-left: 5px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.3s, text-decoration 0.3s;
+      padding: 2px 0;
+      border-radius: 4px;
+        }
+        /* Strike-through when completed */
+        .completed .task-desc {
+      text-decoration: line-through;
+      color: var(--completed-color);
+      opacity: 0.7;
+        }
+        .remove-btn {
+      background: var(--remove-btn-bg);
+      color: var(--remove-btn-color);
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 12px;
+      box-shadow: 0 1px 4px rgba(178,34,34,0.10);
+      transition: background 0.2s, box-shadow 0.2s;
+        }
+        .remove-btn:hover {
+      background: #ff5252;
+      box-shadow: 0 2px 8px rgba(178,34,34,0.18);
+        }
+        .footer {
+      margin: 36px auto 18px auto;
+      background: #2d2d4d;
+      color: #b3b3ff;
+      text-align: center;
+      padding: 12px 0;
+      border-radius: 12px;
+      font-size: 1.08rem;
+      width: 100%;
+      max-width: 410px;
+      box-sizing: border-box;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 12px rgba(44,62,80,0.08);
+        }
+        body.light-mode .footer {
+      background: #e0e7ff;
+      color: #333;
+      box-shadow: 0 2px 12px rgba(44,62,80,0.04);
+        }
+        @media (max-width: 500px) {
+      body {
+        justify-content: flex-start;
+        padding-top: 30px;
+      }
+      .container, .footer {
+        max-width: 98vw;
+        padding-left: 2vw;
+        padding-right: 2vw;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      .mode-toggle-container {
+        right: 8px;
+        top: 8px;
+        padding: 4px 10px 4px 6px;
+      }
+        }
+        </style>
+        <div class="mode-toggle-container">
+      <label class="mode-toggle-switch">
+      <input type="checkbox" class="mode-toggle-checkbox" id="mode-toggle-checkbox">
+      <span class="mode-toggle-slider">
+        <!-- Sun SVG -->
+        <svg class="sun" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="5" fill="#ffd600"/>
+        <g stroke="#ffd600" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="4"/>
+          <line x1="12" y1="20" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.99" y2="5.99"/>
+          <line x1="18.01" y1="18.01" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="4" y2="12"/>
+          <line x1="20" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.99" y2="18.01"/>
+          <line x1="18.01" y1="5.99" x2="19.78" y2="4.22"/>
+        </g>
+        </svg>
+        <!-- Moon SVG -->
+        <svg class="moon" viewBox="0 0 24 24" fill="none">
+        <path d="M21 12.79A9 9 0 0111.21 3a7 7 0 100 18 9 9 0 009.79-8.21z" fill="#fff" stroke="#4caf50" stroke-width="2"/>
+        </svg>
+      </span>
+      <span class="mode-toggle-label" id="mode-toggle-label">Light Mode</span>
+      </label>
+        </div>
+        <script>
+        // Mode toggle logic (switch)
+        const modeCheckbox = document.getElementById('mode-toggle-checkbox');
+        const modeLabel = document.getElementById('mode-toggle-label');
+        function setMode(light) {
+      if (light) {
+        document.body.classList.add('light-mode');
+        modeCheckbox.checked = true;
+        modeLabel.textContent = 'Dark Mode';
+      } else {
+        document.body.classList.remove('light-mode');
+        modeCheckbox.checked = false;
+        modeLabel.textContent = 'Light Mode';
+      }
+        }
+        // Check localStorage for mode preference
+        if (localStorage.getItem('todo-mode') === 'light') {
+      setMode(true);
+        }
+        modeCheckbox.addEventListener('change', () => {
+      const isLight = modeCheckbox.checked;
+      setMode(isLight);
+      localStorage.setItem('todo-mode', isLight ? 'light' : 'dark');
+        });
+        </script>
+</head>
+<body>
+  <div class="container">
+    <h1>My To Do List</h1>
+    <form id="todo-form">
+      <input type="text" id="todo-input" placeholder="Add a new task" required>
+      <button type="submit">Add</button>
+    </form>
+    <ul id="todo-list">
+      <li>
+        <input type="checkbox" class="todo-checkbox">
+        <span class="task-desc">Studying</span>
+        <button class="remove-btn">Remove</button>
+      </li>
+      <li>
+        <input type="checkbox" class="todo-checkbox">
+        <span class="task-desc">Playing</span>
+        <button class="remove-btn">Remove</button>
+      </li>
+      <li>
+        <input type="checkbox" class="todo-checkbox">
+        <span class="task-desc">Coding</span>
+        <button class="remove-btn">Remove</button>
+      </li>
+    </ul>
+  </div>
+  <div class="footer">
+    Made by Achintya Sunny
+  </div>
+  <script>
+    const form = document.getElementById('todo-form');
+    const input = document.getElementById('todo-input');
+    const list = document.getElementById('todo-list');
+
+    function setupTaskItem(li) {
+      const checkbox = li.querySelector('.todo-checkbox');
+      const desc = li.querySelector('.task-desc');
+      const removeBtn = li.querySelector('.remove-btn');
+
+      checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+          li.classList.add('completed');
+        } else {
+          li.classList.remove('completed');
+        }
+      });
+
+      removeBtn.addEventListener('click', function() {
+        list.removeChild(li);
+      });
+    }
+
+    document.querySelectorAll('#todo-list li').forEach(setupTaskItem);
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const task = input.value.trim();
+      if (task) {
+        const li = document.createElement('li');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'todo-checkbox';
+
+        const span = document.createElement('span');
+        span.className = 'task-desc';
+        span.textContent = task;
+
+        const btn = document.createElement('button');
+        btn.textContent = 'Remove';
+        btn.className = 'remove-btn';
+
+        li.appendChild(checkbox);
+        li.appendChild(span);
+        li.appendChild(btn);
+
+        setupTaskItem(li);
+
+        list.appendChild(li);
+        input.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
